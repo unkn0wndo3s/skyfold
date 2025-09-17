@@ -45,6 +45,9 @@ public class ThirdPersonCamera : MonoBehaviour
         // Les angles restent fixes
         // currentX et currentY ne sont plus modifiés par la souris
         
+        // Suivre la rotation du joueur pour la rotation Y de la caméra
+        currentX = target.eulerAngles.y;
+        
         // Calculer la rotation de la caméra (angles fixes)
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
         

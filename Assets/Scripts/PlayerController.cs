@@ -12,9 +12,17 @@ public class PlayerController : MonoBehaviour
     [Header("Smooth Transition")]
     public float smoothSpeed = 5f; // Vitesse de transition fluide
     
+    [Header("Player Rotation")]
+    public float playerRotationSpeed = 30f; // Vitesse de rotation du joueur sur lui-même
+    
+    [Header("Gliding Physics")]
+    public float glidingFallSpeed = 0.5f; // Vitesse de chute très lente (planage)
+    public float gravity = 9.81f; // Gravité normale
+    
     private Rigidbody rb;
     private Vector3 currentRotation;
     private Vector3 targetRotation;
+    private float playerYRotation = 0f; // Rotation Y du joueur sur lui-même
     
     void Start()
     {
@@ -24,8 +32,9 @@ public class PlayerController : MonoBehaviour
             rb = gameObject.AddComponent<Rigidbody>();
         }
         
-        // Empêcher la rotation automatique du rigidbody
-        rb.freezeRotation = true;
+        // Permettre la rotation contrôlée du rigidbody
+        rb.freezeRotation = false;
+        rb.useGravity = false; // Désactiver la gravité Unity pour contrôler manuellement
         
         // S'assurer que le joueur a le tag "Player"
         if (gameObject.tag != "Player")
@@ -36,6 +45,7 @@ public class PlayerController : MonoBehaviour
         // Initialiser la rotation actuelle et cible
         currentRotation = transform.eulerAngles;
         targetRotation = currentRotation;
+        playerYRotation = transform.eulerAngles.y;
     }
     
     void Update()
@@ -76,13 +86,25 @@ public class PlayerController : MonoBehaviour
         // Transition fluide vers la rotation cible
         currentRotation = Vector3.Lerp(currentRotation, targetRotation, smoothSpeed * Time.deltaTime);
         
-        // Appliquer la rotation
-        transform.rotation = Quaternion.Euler(currentRotation);
+        // Rotation du joueur sur lui-même (Y axis)
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            playerYRotation += playerRotationSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            playerYRotation -= playerRotationSpeed * Time.deltaTime;
+        }
+        
+        // Appliquer la rotation combinée
+        Vector3 finalRotation = new Vector3(currentRotation.x, playerYRotation, currentRotation.z);
+        transform.rotation = Quaternion.Euler(finalRotation);
     }
     
     void FixedUpdate()
     {
-        // Plus de mouvement - le joueur reste statique
-        // Seule la rotation est gérée dans Update()
+        // Physique de planage - chute très lente
+        Vector3 gravityForce = Vector3.down * glidingFallSpeed;
+        rb.AddForce(gravityForce, ForceMode.Acceleration);
     }
 }
