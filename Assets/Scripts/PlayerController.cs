@@ -2,16 +2,19 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    [Header("Rotation Settings")]
     public float rotationSpeed = 10f;
     
-    [Header("Input Settings")]
-    public string horizontalInput = "Horizontal";
-    public string verticalInput = "Vertical";
+    [Header("Arrow Key Rotation")]
+    public float upDownAngle = 45f; // Angle pour haut/bas
+    public float leftRightAngle = 23f; // Angle pour gauche/droite
+    
+    [Header("Smooth Transition")]
+    public float smoothSpeed = 5f; // Vitesse de transition fluide
     
     private Rigidbody rb;
-    private Vector3 movement;
+    private Vector3 currentRotation;
+    private Vector3 targetRotation;
     
     void Start()
     {
@@ -29,30 +32,57 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.tag = "Player";
         }
+        
+        // Initialiser la rotation actuelle et cible
+        currentRotation = transform.eulerAngles;
+        targetRotation = currentRotation;
     }
     
     void Update()
     {
-        // Récupérer les inputs
-        float horizontal = Input.GetAxis(horizontalInput);
-        float vertical = Input.GetAxis(verticalInput);
+        // Désactiver le mouvement WASD - plus de mouvement horizontal/vertical
         
-        // Calculer le mouvement
-        movement = new Vector3(horizontal, 0f, vertical).normalized;
+        // Calculer les angles cibles basés sur les touches actuellement pressées
+        float targetX = 0f;
+        float targetZ = 0f;
+        
+        // Gestion des flèches directionnelles pour la rotation
+        // Chaque touche ajoute son angle fixe quand pressée
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            // Rotation vers le haut (45°)
+            targetX -= upDownAngle;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            // Rotation vers le bas (45°)
+            targetX += upDownAngle;
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            // Rotation inclinée droite (23°)
+            targetZ -= leftRightAngle;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            // Rotation inclinée gauche (23°)
+            targetZ += leftRightAngle;
+        }
+        
+        // Mettre à jour la rotation cible
+        targetRotation.x = targetX;
+        targetRotation.z = targetZ;
+        
+        // Transition fluide vers la rotation cible
+        currentRotation = Vector3.Lerp(currentRotation, targetRotation, smoothSpeed * Time.deltaTime);
+        
+        // Appliquer la rotation
+        transform.rotation = Quaternion.Euler(currentRotation);
     }
     
     void FixedUpdate()
     {
-        // Appliquer le mouvement
-        if (movement.magnitude > 0.1f)
-        {
-            // Déplacer le joueur
-            Vector3 moveDirection = transform.TransformDirection(movement);
-            rb.MovePosition(transform.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
-            
-            // Faire tourner le joueur dans la direction du mouvement
-            Quaternion targetRotation = Quaternion.LookRotation(movement);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
-        }
+        // Plus de mouvement - le joueur reste statique
+        // Seule la rotation est gérée dans Update()
     }
 }

@@ -41,18 +41,11 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (target == null) return;
         
-        // Récupérer les inputs de la souris
-        float mouseX = Input.GetAxis(mouseXInput) * mouseSensitivity;
-        float mouseY = Input.GetAxis(mouseYInput) * mouseSensitivity;
+        // Désactiver le contrôle de la caméra par la souris
+        // Les angles restent fixes
+        // currentX et currentY ne sont plus modifiés par la souris
         
-        // Mettre à jour les angles de rotation
-        currentX += mouseX;
-        currentY -= mouseY;
-        
-        // Limiter l'angle vertical
-        currentY = Mathf.Clamp(currentY, minVerticalAngle, maxVerticalAngle);
-        
-        // Calculer la rotation de la caméra
+        // Calculer la rotation de la caméra (angles fixes)
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
         
         // Calculer la position de la caméra
