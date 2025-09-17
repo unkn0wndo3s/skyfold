@@ -23,6 +23,12 @@ public class PlayerController : MonoBehaviour
         
         // Empêcher la rotation automatique du rigidbody
         rb.freezeRotation = true;
+        
+        // S'assurer que le joueur a le tag "Player"
+        if (gameObject.tag != "Player")
+        {
+            gameObject.tag = "Player";
+        }
     }
     
     void Update()
