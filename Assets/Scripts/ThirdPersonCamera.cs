@@ -3,13 +3,13 @@ using UnityEngine;
 public class ThirdPersonCamera : MonoBehaviour
 {
     [Header("Target Settings")]
-    public Transform target; // Le cube player à suivre
+    public Transform target; // Player cube to follow
     
     [Header("Camera Settings")]
-    public float distance = 5f; // Distance entre la caméra et le target
-    public float height = 2f; // Hauteur de la caméra par rapport au target
-    public float rotationSpeed = 2f; // Vitesse de rotation de la caméra
-    public float followSpeed = 5f; // Vitesse de suivi de la caméra
+    public float distance = 5f; // Distance between camera and target
+    public float height = 2f; // Camera height relative to target
+    public float rotationSpeed = 2f; // Camera rotation speed
+    public float followSpeed = 5f; // Camera follow speed
     
     [Header("Input Settings")]
     public string mouseXInput = "Mouse X";
@@ -26,11 +26,11 @@ public class ThirdPersonCamera : MonoBehaviour
     
     void Start()
     {
-        // Verrouiller le curseur au centre de l'écran
+        // Lock cursor to center of screen
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
-        // Calculer l'offset initial
+        // Calculate initial offset
         if (target != null)
         {
             offset = transform.position - target.position;
@@ -41,24 +41,24 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (target == null) return;
         
-        // Désactiver le contrôle de la caméra par la souris
-        // Les angles restent fixes
-        // currentX et currentY ne sont plus modifiés par la souris
+        // Disable camera control by mouse
+        // Angles remain fixed
+        // currentX and currentY are no longer modified by mouse
         
-        // Suivre la rotation du joueur pour la rotation Y de la caméra
+        // Follow player rotation for camera Y rotation
         currentX = target.eulerAngles.y;
         
-        // Calculer la rotation de la caméra (angles fixes)
+        // Calculate camera rotation (fixed angles)
         Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
         
-        // Calculer la position de la caméra
+        // Calculate camera position
         Vector3 targetPosition = target.position + Vector3.up * height;
         Vector3 desiredPosition = targetPosition - rotation * Vector3.forward * distance;
         
-        // Appliquer la position avec un smooth follow
+        // Apply position with smooth follow
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
         
-        // Faire regarder la caméra vers le target
+        // Make camera look at target
         Vector3 lookDirection = targetPosition - transform.position;
         if (lookDirection != Vector3.zero)
         {
@@ -67,7 +67,7 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
     
-    // Méthode pour changer le target en cours de jeu
+    // Method to change target during gameplay
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
@@ -77,13 +77,13 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
     
-    // Méthode pour ajuster la distance dynamiquement
+    // Method to adjust distance dynamically
     public void SetDistance(float newDistance)
     {
         distance = Mathf.Max(1f, newDistance);
     }
     
-    // Méthode pour ajuster la hauteur dynamiquement
+    // Method to adjust height dynamically
     public void SetHeight(float newHeight)
     {
         height = newHeight;

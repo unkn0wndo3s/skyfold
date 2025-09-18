@@ -315,13 +315,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.93, y: 2.77, z: -10}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: -2.31, y: 204.4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,10 +870,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b225973456bbe499758a4acd375391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 10
-  upDownAngle: 45
-  leftRightAngle: 23
-  smoothSpeed: 5
+  mass: 1
+  gravity: 9.81
+  airDensity: 1.225
+  liftCoefficient: 1.2
+  dragCoefficient: 0.8
+  wingArea: 0.8
+  stabilityFactor: 2
+  maxFallSpeed: 1.2
+  maxClimbSpeed: 8
+  elevatorSensitivity: 15
+  aileronSensitivity: 12
+  rudderSensitivity: 8
+  targetPitchAngle: 45
+  maxRollAngle: 60
+  turnRate: 30
+  barrelRollSpeed: 2
+  barrelRollTurnBoost: 2
+  maxSpeed: 25
+  minSpeed: 1
+  stallSpeed: 2
+  glideRatio: 8
+  initialVelocity: 8
+  momentumDecay: 0.98
+  momentumThreshold: 5
+  controlSmoothness: 12
+  maxControlDeflection: 45
+  controlMultiplier: 3
+  angleResponseSpeed: 8
 --- !u!65 &1849141377
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -957,7 +981,7 @@ Transform:
   m_GameObject: {fileID: 1849141374}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.77, y: 2.57, z: 0}
+  m_LocalPosition: {x: -2.77, y: 200, z: 0}
   m_LocalScale: {x: 2.8923, y: 1, z: 3.043}
   m_ConstrainProportionsScale: 0
   m_Children: []
