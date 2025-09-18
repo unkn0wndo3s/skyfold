@@ -11,25 +11,14 @@ public class ThirdPersonCamera : MonoBehaviour
     public float rotationSpeed = 2f; // Camera rotation speed
     public float followSpeed = 5f; // Camera follow speed
     
-    [Header("Input Settings")]
-    public string mouseXInput = "Mouse X";
-    public string mouseYInput = "Mouse Y";
-    public float mouseSensitivity = 2f;
+    [Header("Fixed Camera Settings")]
+    public Vector3 fixedAngles = new Vector3(35f, -90f, 0f); // Fixed camera angles (X, Y, Z)
+    public Vector3 fixedOffset = new Vector3(-3f, 36f, -20f); // Fixed position offset from player
     
-    [Header("Camera Limits")]
-    public float minVerticalAngle = -30f;
-    public float maxVerticalAngle = 60f;
-    
-    private float currentX = 0f;
-    private float currentY = 0f;
     private Vector3 offset;
     
     void Start()
     {
-        // Lock cursor to center of screen
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        
         // Calculate initial offset
         if (target != null)
         {
@@ -41,30 +30,14 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (target == null) return;
         
-        // Disable camera control by mouse
-        // Angles remain fixed
-        // currentX and currentY are no longer modified by mouse
+        // Apply fixed camera angles
+        transform.rotation = Quaternion.Euler(fixedAngles);
         
-        // Follow player rotation for camera Y rotation
-        currentX = target.eulerAngles.y;
-        
-        // Calculate camera rotation (fixed angles)
-        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
-        
-        // Calculate camera position
-        Vector3 targetPosition = target.position + Vector3.up * height;
-        Vector3 desiredPosition = targetPosition - rotation * Vector3.forward * distance;
+        // Calculate camera position using fixed offset
+        Vector3 desiredPosition = target.position + fixedOffset;
         
         // Apply position with smooth follow
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
-        
-        // Make camera look at target
-        Vector3 lookDirection = targetPosition - transform.position;
-        if (lookDirection != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(lookDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
-        }
     }
     
     // Method to change target during gameplay
